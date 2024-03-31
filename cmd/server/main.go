@@ -1,13 +1,13 @@
 package main
 
 import (
+	"gin-boilerplate/cmd/server/routers"
 	"gin-boilerplate/config"
-	"gin-boilerplate/infra/database"
 	"gin-boilerplate/infra/logger"
-	"gin-boilerplate/migrations"
-	"gin-boilerplate/routers"
-	"github.com/spf13/viper"
+	"gin-boilerplate/internal/repository"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -22,13 +22,16 @@ func main() {
 	}
 	masterDSN, replicaDSN := config.DbConfiguration()
 
-	if err := database.DbConnection(masterDSN, replicaDSN); err != nil {
+	repo, err := repository.New(masterDSN, replicaDSN)
+	if err != nil {
 		logger.Fatalf("database DbConnection error: %s", err)
 	}
-	//later separate migration
-	migrations.Migrate()
 
-	router := routers.SetupRoute()
+	// TODO: later separate migration
+	if err := repo.Migrate(); err != nil {
+		logger.Fatalf("migrations Migrate() error: %s", err)
+	}
+
+	router := routers.SetupRoute(repo)
 	logger.Fatalf("%v", router.Run(config.ServerConfig()))
-
 }

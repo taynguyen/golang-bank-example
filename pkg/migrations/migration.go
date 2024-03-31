@@ -1,16 +1,13 @@
 package migrations
 
 import (
-	"gin-boilerplate/infra/database"
-	"gin-boilerplate/models"
+	"gin-boilerplate/internal/models"
+	"gin-boilerplate/internal/repository"
 )
 
 // Migrate Add list of model add for migrations
 // TODO later separate migration each models
-func Migrate() {
+func Migrate() error {
 	var migrationModels = []interface{}{&models.Example{}}
-	err := database.DB.AutoMigrate(migrationModels...)
-	if err != nil {
-		return
-	}
+	return repository.DB.AutoMigrate(migrationModels...)
 }

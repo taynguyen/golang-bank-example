@@ -1,13 +1,14 @@
 package routers
 
 import (
-	"gin-boilerplate/routers/middleware"
+	"gin-boilerplate/cmd/server/routers/middleware"
+	"gin-boilerplate/internal/repository"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
 
-func SetupRoute() *gin.Engine {
-
+func SetupRoute(repo repository.Registry) *gin.Engine {
 	environment := viper.GetBool("DEBUG")
 	if environment {
 		gin.SetMode(gin.DebugMode)

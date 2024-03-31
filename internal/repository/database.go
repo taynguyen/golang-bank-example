@@ -1,12 +1,13 @@
-package database
+package repository
 
 import (
+	"log"
+
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
-	"log"
 )
 
 var (
@@ -15,7 +16,7 @@ var (
 )
 
 // DbConnection create database connection
-func DbConnection(masterDSN, replicaDSN string) error {
+func DbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
 	var db = DB
 
 	logMode := viper.GetBool("DB_LOG_MODE")
@@ -39,10 +40,10 @@ func DbConnection(masterDSN, replicaDSN string) error {
 	}
 	if err != nil {
 		log.Fatalf("Db connection error")
-		return err
+		return nil, err
 	}
 	DB = db
-	return nil
+	return db, err
 }
 
 // GetDB connection
