@@ -2,6 +2,7 @@ package repository
 
 import (
 	"gin-boilerplate/internal/repository/account"
+	"gin-boilerplate/internal/repository/transactions"
 
 	"gorm.io/gorm"
 )
@@ -10,12 +11,14 @@ type Registry interface {
 	Migrate() error
 
 	Account() account.IAccountRepo
+	Transactions() transactions.ITransactionRepo
 }
 
 type impl struct {
 	db *gorm.DB
 
-	account account.IAccountRepo
+	accountRepo account.IAccountRepo
+	txRepo      transactions.ITransactionRepo
 }
 
 func New(dsn string, replicaDsn string) (Registry, error) {
@@ -25,11 +28,15 @@ func New(dsn string, replicaDsn string) (Registry, error) {
 	}
 
 	return &impl{
-		db:      db,
-		account: account.NewAccountRepo(db),
+		db:          db,
+		accountRepo: account.NewAccountRepo(db),
 	}, nil
 }
 
 func (i *impl) Account() account.IAccountRepo {
-	return i.account
+	return i.accountRepo
+}
+
+func (i *impl) Transactions() transactions.ITransactionRepo {
+	return i.txRepo
 }
