@@ -31,9 +31,11 @@ func main() {
 	}
 
 	// TODO: later separate migration
+	logger.Infof("migrations Migrate() started")
 	if err := repo.Migrate(); err != nil {
 		logger.Fatalf("migrations Migrate() error: %s", err)
 	}
+	logger.Infof("migrations Migrate() completed")
 
 	accCtrl := accCtrlPkg.New(repo)
 	accHandler := accounts.NewHandler(accCtrl)
