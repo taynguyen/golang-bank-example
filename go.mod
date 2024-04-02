@@ -1,9 +1,10 @@
 module gin-boilerplate
 
-go 1.17
+go 1.22
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.10.1
 	gorm.io/driver/postgres v1.3.1

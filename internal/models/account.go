@@ -8,10 +8,12 @@ type Account struct {
 	gorm.Model
 	UserID          int64 `gorm:"index"`
 	AccountStatusID int   `gorm:"index"`
+	BankID          int
 	Number          string
 	Balance         float64
 
 	// Foreign keys
-	AccountStatus AccountStatus
-	User          User
+	AccountStatus *AccountStatus
+	Bank          *Bank
+	User          *User
 }

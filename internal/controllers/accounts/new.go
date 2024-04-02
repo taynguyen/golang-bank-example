@@ -7,7 +7,7 @@ import (
 )
 
 type IAccountController interface {
-	GetTransactions(ctx context.Context, userID int64) ([]models.Transaction, models.Pagination, error)
+	GetTransactions(ctx context.Context, userID uint) ([]models.Transaction, models.Pagination, error)
 }
 
 type impl struct {

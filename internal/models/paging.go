@@ -1,7 +1,7 @@
 package models
 
 type Pagination struct {
-	Total  int
+	Total  int64
 	Limit  int
 	Offset int
 }
