@@ -32,9 +32,9 @@ func DbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
 	})
 	if !debug {
 		db.Use(dbresolver.Register(dbresolver.Config{
-			Replicas: []gorm.Dialector{
-				postgres.Open(replicaDSN),
-			},
+			// Replicas: []gorm.Dialector{
+			// 	postgres.Open(replicaDSN),
+			// },
 			Policy: dbresolver.RandomPolicy{},
 		}))
 	}

@@ -29,7 +29,8 @@ func New(dsn string, replicaDsn string) (Registry, error) {
 
 	return &impl{
 		db:          db,
-		accountRepo: account.NewAccountRepo(db),
+		accountRepo: account.New(db),
+		txRepo:      transactions.New(db),
 	}, nil
 }
 

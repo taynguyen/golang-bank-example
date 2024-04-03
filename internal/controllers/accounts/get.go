@@ -9,6 +9,9 @@ import (
 func (i *impl) GetTransactions(ctx context.Context, userID uint) ([]models.Transaction, models.Pagination, error) {
 	transactions, pagination, err := i.repo.Transactions().GetTransactions(ctx, transactions.GetTransactionsFilter{
 		UserID: &userID,
+		Pagination: models.Pagination{
+			Limit: 10,
+		},
 	})
 	if err != nil {
 		return nil, models.Pagination{}, err

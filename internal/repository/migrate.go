@@ -8,6 +8,8 @@ func (i impl) Migrate() error {
 		&models.User{},
 		&models.Account{},
 		&models.AccountStatus{},
+		&models.Transaction{},
+		&models.TransactionType{},
 	}
 
 	return i.db.AutoMigrate(migrationModels...)

@@ -1,11 +1,27 @@
 package accounts
 
 import (
+	"gin-boilerplate/internal/handlers"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+type Transaction struct {
+	UUID      string    `json:"uuid"`
+	AccountID uint      `json:"account_id"`
+	Amount    float32   `json:"amount"`
+	StatusID  uint      `json:"status_id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type GetUserTransactionsResponse struct {
+	Transactions []Transaction       `json:"transactions"`
+	Pagination   handlers.Pagination `json:"pagination"`
+}
 
 func (h Handler) GetUserTransactions(c *gin.Context) {
 	// TODO: Get user ID from JWT token
@@ -25,8 +41,25 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"transactions": transactions,
-		"pagination":   pagination,
-	})
+	// Convert to model
+	res := GetUserTransactionsResponse{
+		Transactions: make([]Transaction, 0, len(transactions)),
+		Pagination: handlers.Pagination{
+			Total:  pagination.Total,
+			Limit:  pagination.Limit,
+			Offset: pagination.Offset,
+		},
+	}
+	for _, tx := range transactions {
+		res.Transactions = append(res.Transactions, Transaction{
+			UUID:      tx.UUID,
+			AccountID: tx.AccountID,
+			Amount:    tx.Amount,
+			StatusID:  tx.StatusID,
+			CreatedAt: tx.CreatedAt,
+			UpdatedAt: tx.UpdatedAt,
+		})
+	}
+
+	c.JSON(http.StatusOK, res)
 }

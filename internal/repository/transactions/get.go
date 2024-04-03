@@ -22,7 +22,7 @@ func (i *impl) GetTransactions(ctx context.Context, filter GetTransactionsFilter
 
 	paging := filter.Pagination
 
-	err := stmt.Count(&filter.Total).Error
+	err := stmt.Count(&paging.Total).Error
 	if err != nil {
 		return nil, paging, errors.WithStack(err)
 	}
@@ -33,5 +33,5 @@ func (i *impl) GetTransactions(ctx context.Context, filter GetTransactionsFilter
 		return nil, paging, errors.WithStack(err)
 	}
 
-	return nil, paging, nil
+	return transactions, paging, nil
 }

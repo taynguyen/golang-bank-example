@@ -15,7 +15,7 @@ type accountRepo struct {
 	db *gorm.DB
 }
 
-func NewAccountRepo(db *gorm.DB) IAccountRepo {
+func New(db *gorm.DB) IAccountRepo {
 	return &accountRepo{
 		db: db,
 	}
