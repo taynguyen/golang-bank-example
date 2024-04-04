@@ -6,12 +6,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
 	accountsCtrlPkg "gin-boilerplate/internal/controllers/accounts"
 	"gin-boilerplate/internal/models"
+	"gin-boilerplate/test/utils"
 )
 
 func TestHandler_GetUserTransactions(t *testing.T) {
@@ -91,7 +91,7 @@ func TestHandler_GetUserTransactions(t *testing.T) {
 				accountCtrl: mockAccountCtrl,
 			}
 
-			router := createTestRouter("/users/:id/transactions", h.GetUserTransactions)
+			router := utils.CreateTestRouter("GET", "/users/:id/transactions", h.GetUserTransactions)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest("GET", tt.args.queryUrl, nil)
 			router.ServeHTTP(w, req)
@@ -100,10 +100,4 @@ func TestHandler_GetUserTransactions(t *testing.T) {
 			require.JSONEq(t, tt.wantBody, w.Body.String(), "json body")
 		})
 	}
-}
-
-func createTestRouter(path string, handlerFunc gin.HandlerFunc) *gin.Engine {
-	r := gin.Default()
-	r.GET(path, handlerFunc)
-	return r
 }

@@ -16,6 +16,7 @@ gen-mocks:
 	docker run -v "$(current_dir)":/src -w /src vektra/mockery --all --inpackage
 
 # TODO: Make test run via docker
+.PHONY: test
 test:
 	go test -p 1 -coverprofile=c.out -failfast -timeout 5m ./...
 
