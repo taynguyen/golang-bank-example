@@ -10,6 +10,7 @@ import (
 )
 
 func (i impl) CreateTransaction(ctx context.Context, userID uint, t models.Transaction) (*models.Transaction, error) {
+	logger := logger.GetLogger().WithField("controller", "CreateTransaction")
 	t.StatusID = models.TransactionStatusCreated
 
 	var newTx *models.Transaction
@@ -59,7 +60,6 @@ func (i impl) CreateTransaction(ctx context.Context, userID uint, t models.Trans
 		return nil
 
 	}); err != nil {
-		logger.Errorf("failed to create transaction: %v", err)
 		return nil, err
 	}
 

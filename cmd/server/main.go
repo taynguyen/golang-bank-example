@@ -14,6 +14,8 @@ import (
 )
 
 func main() {
+	logger := logger.GetLogger().WithField("cmd", "server")
+
 	//set timezone
 	loc, _ := time.LoadLocation(viper.GetString("SERVER_TIMEZONE"))
 	time.Local = loc

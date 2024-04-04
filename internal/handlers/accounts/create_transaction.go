@@ -1,6 +1,7 @@
 package accounts
 
 import (
+	"gin-boilerplate/infra/logger"
 	"gin-boilerplate/internal/models"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,8 @@ type CreateTransactionBody struct {
 }
 
 func (h Handler) CreateTransaction(c *gin.Context) {
+	logger := logger.GetLogger().WithField("handler", "CreateTransaction")
+
 	var uri CreateTransactionUri
 	if err := c.ShouldBindUri(&uri); err != nil {
 		c.JSON(400, gin.H{"code": "invalid_uri", "message": err.Error()})
@@ -36,11 +39,15 @@ func (h Handler) CreateTransaction(c *gin.Context) {
 		TypeID:    uint(body.TypeID),
 	})
 	if err != nil {
-		c.JSON(500, gin.H{"code": "internal_error", "message": err.Error()})
+		convertAndResponseError(c, err)
+		return
+	}
+	if tx == nil {
+		logger.Errorf("created tx is nil: %v", err)
+		c.JSON(500, gin.H{"code": "internal_error", "message": "internal error"})
 		return
 	}
 
 	// Convert to response
-	// TODO: convert to response
-	c.JSON(200, tx)
+	c.JSON(200, txResponseFromModel(*tx))
 }

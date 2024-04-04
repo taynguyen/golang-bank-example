@@ -81,15 +81,19 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 		},
 	}
 	for _, tx := range transactions {
-		res.Transactions = append(res.Transactions, Transaction{
-			UUID:      tx.UUID,
-			AccountID: tx.AccountID,
-			Amount:    tx.Amount,
-			StatusID:  tx.StatusID,
-			CreatedAt: tx.CreatedAt,
-			UpdatedAt: tx.UpdatedAt,
-		})
+		res.Transactions = append(res.Transactions, txResponseFromModel(tx))
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func txResponseFromModel(tx models.Transaction) Transaction {
+	return Transaction{
+		UUID:      tx.UUID,
+		AccountID: tx.AccountID,
+		Amount:    tx.Amount,
+		StatusID:  tx.StatusID,
+		CreatedAt: tx.CreatedAt,
+		UpdatedAt: tx.UpdatedAt,
+	}
 }

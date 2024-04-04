@@ -2,6 +2,7 @@ package config
 
 import (
 	"gin-boilerplate/infra/logger"
+
 	"github.com/spf13/viper"
 )
 
@@ -12,6 +13,7 @@ type Configuration struct {
 
 // SetupConfig configuration
 func SetupConfig() error {
+	logger := logger.GetLogger().WithField("config", "SetupConfig")
 	var configuration *Configuration
 
 	viper.SetConfigFile(".env")
