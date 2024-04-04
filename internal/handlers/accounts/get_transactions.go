@@ -53,7 +53,8 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 
 	// Pagination
 	defaultLimit := 10
-	filter.Pagination, err = handlers.GetPaginationFromQuery(c, defaultLimit)
+	maxTxLimit := 100
+	filter.Pagination, err = handlers.GetPaginationFromQuery(c, defaultLimit, maxTxLimit)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_pagination", "message": err.Error()})
 		return

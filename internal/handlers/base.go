@@ -13,7 +13,7 @@ type Pagination struct {
 	Total  int64 `form:"total" json:"total"`
 }
 
-func GetPaginationFromQuery(c *gin.Context, defaultLimit int) (models.Pagination, error) {
+func GetPaginationFromQuery(c *gin.Context, defaultLimit int, maxLimit int) (models.Pagination, error) {
 	var p Pagination
 	err := c.BindQuery(&p)
 	if err != nil {
@@ -24,7 +24,7 @@ func GetPaginationFromQuery(c *gin.Context, defaultLimit int) (models.Pagination
 		Limit:  p.Limit,
 		Offset: p.Offset,
 	}
-	if p.Limit == 0 {
+	if p.Limit == 0 || p.Limit > maxLimit {
 		m.Limit = defaultLimit
 	}
 	return m, nil
