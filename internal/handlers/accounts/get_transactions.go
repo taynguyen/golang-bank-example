@@ -40,7 +40,7 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 	// Path params
 	uriParam := GetUserTransactionsUri{}
 	if err := c.ShouldBindUri(&uriParam); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_uri", "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_uri_param", "message": "Invalid URI params"})
 		return
 	}
 	filter := transactions.GetTransactionsFilter{

@@ -1,3 +1,5 @@
+current_dir = $(shell pwd)
+
 help:
 	@echo ''
 	@echo 'Usage: make [TARGET] [EXTRA_ARGUMENTS]'
@@ -6,6 +8,16 @@ help:
 	@echo 'make build: make build container'
 	@echo 'make production: docker production build'
 	@echo 'clean: clean for all clear docker images'
+
+init-tools:
+	docker pull vektra/mockery
+
+gen-mocks:
+	docker run -v "$(current_dir)":/src -w /src vektra/mockery --all --inpackage
+
+# TODO: Make test run via docker
+test:
+	go test -p 1 -coverprofile=c.out -failfast -timeout 5m ./...
 
 dev:
 	if [ ! -f .env ]; then cp .env.example .env; fi;

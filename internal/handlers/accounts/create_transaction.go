@@ -3,6 +3,7 @@ package accounts
 import (
 	"gin-boilerplate/infra/logger"
 	"gin-boilerplate/internal/models"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,13 +23,13 @@ func (h Handler) CreateTransaction(c *gin.Context) {
 
 	var uri CreateTransactionUri
 	if err := c.ShouldBindUri(&uri); err != nil {
-		c.JSON(400, gin.H{"code": "invalid_uri", "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_uri", "message": err.Error()})
 		return
 	}
 
 	var body CreateTransactionBody
 	if err := c.ShouldBindJSON(&body); err != nil {
-		c.JSON(400, gin.H{"code": "invalid_body", "message": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_body", "message": err.Error()})
 		return
 	}
 
@@ -44,10 +45,10 @@ func (h Handler) CreateTransaction(c *gin.Context) {
 	}
 	if tx == nil {
 		logger.Errorf("created tx is nil: %v", err)
-		c.JSON(500, gin.H{"code": "internal_error", "message": "internal error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"code": "internal_error", "message": "internal error"})
 		return
 	}
 
 	// Convert to response
-	c.JSON(200, txResponseFromModel(*tx))
+	c.JSON(http.StatusOK, txResponseFromModel(*tx))
 }
