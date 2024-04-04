@@ -5,7 +5,6 @@ import (
 	"gin-boilerplate/internal/repository/transactions"
 	"gin-boilerplate/internal/utils"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +19,12 @@ type Transaction struct {
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
+type GetUserTransactionsUri struct {
+	UserID uint `uri:"id" binding:"required"`
+}
+
 type GetUserTransactionsQuery struct {
+	// UserID    uint  `uri:"user_id" binding:"required"`
 	AccountID *uint `form:"account_id"`
 }
 
@@ -33,15 +37,13 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 	// TODO: Get user ID from token
 
 	// Path params
-	userIDStr := c.Param("id")
-	val, err := strconv.ParseUint(userIDStr, 10, 32)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_user_id", "message": "Invalid user ID"})
+	uriParam := GetUserTransactionsUri{}
+	if err := c.ShouldBindUri(&uriParam); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_uri", "message": err.Error()})
 		return
 	}
-	userID := uint(val)
 	filter := transactions.GetTransactionsFilter{
-		UserID: utils.Ptr(userID),
+		UserID: utils.Ptr(uriParam.UserID),
 	}
 
 	p := GetUserTransactionsQuery{}
@@ -54,6 +56,7 @@ func (h Handler) GetUserTransactions(c *gin.Context) {
 	// Pagination
 	defaultLimit := 10
 	maxTxLimit := 100
+	var err error
 	filter.Pagination, err = handlers.GetPaginationFromQuery(c, defaultLimit, maxTxLimit)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_pagination", "message": err.Error()})
