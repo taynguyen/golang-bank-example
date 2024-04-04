@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"gin-boilerplate/internal/handlers"
+	"gin-boilerplate/internal/models"
 	"gin-boilerplate/internal/repository/transactions"
 	"gin-boilerplate/internal/utils"
 	"net/http"
@@ -11,12 +12,12 @@ import (
 )
 
 type Transaction struct {
-	UUID      string     `json:"uuid"`
-	AccountID uint       `json:"account_id"`
-	Amount    float32    `json:"amount"`
-	StatusID  uint       `json:"status_id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	UUID      string                     `json:"uuid"`
+	AccountID uint                       `json:"account_id"`
+	Amount    float32                    `json:"amount"`
+	StatusID  models.TransactionStatusID `json:"status_id"`
+	CreatedAt time.Time                  `json:"created_at"`
+	UpdatedAt *time.Time                 `json:"updated_at,omitempty"`
 }
 
 type GetUserTransactionsUri struct {

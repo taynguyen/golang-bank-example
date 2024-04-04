@@ -9,6 +9,7 @@ import (
 
 type IAccountController interface {
 	GetTransactions(ctx context.Context, filter transactions.GetTransactionsFilter) ([]models.Transaction, models.Pagination, error)
+	CreateTransaction(ctx context.Context, userID uint, transaction models.Transaction) (*models.Transaction, error)
 }
 
 type impl struct {

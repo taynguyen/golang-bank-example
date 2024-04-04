@@ -6,8 +6,8 @@ import (
 
 type Account struct {
 	gorm.Model
-	UserID          int64 `gorm:"index"`
-	AccountStatusID int   `gorm:"index"`
+	UserID          uint `gorm:"index"`
+	AccountStatusID int  `gorm:"index"`
 	BankID          int
 	Number          string
 	Balance         float64

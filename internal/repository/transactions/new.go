@@ -9,6 +9,7 @@ import (
 
 type ITransactionRepo interface {
 	GetTransactions(ctx context.Context, filter GetTransactionsFilter) ([]models.Transaction, models.Pagination, error)
+	CreateTransaction(ctx context.Context, transaction *models.Transaction) (*models.Transaction, error)
 }
 
 type impl struct {

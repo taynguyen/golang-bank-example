@@ -8,15 +8,18 @@ import (
 )
 
 type IAccountRepo interface {
+	GetAccount(ctx context.Context, id uint) (*models.Account, error)
+	UpdateAccountBalance(ctx context.Context, account *models.Account) error
+
 	GetTxDetail(ctx context.Context, id int) (*models.Transaction, error)
 }
 
-type accountRepo struct {
+type impl struct {
 	db *gorm.DB
 }
 
 func New(db *gorm.DB) IAccountRepo {
-	return &accountRepo{
+	return &impl{
 		db: db,
 	}
 }

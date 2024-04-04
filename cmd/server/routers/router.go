@@ -51,4 +51,6 @@ func (router *Router) public(g *gin.Engine) {
 func (router *Router) authenticated(g *gin.Engine) {
 	v1 := g.Group("/api/v1")
 	v1.GET("/users/:id/transactions", middleware.LoggedIn(), router.accountHandler.GetUserTransactions)
+
+	v1.POST("/users/:id/transactions", middleware.LoggedIn(), router.accountHandler.CreateTransaction)
 }
