@@ -25,7 +25,7 @@ type impl struct {
 }
 
 func New(dsn string, replicaDsn string) (Registry, error) {
-	db, err := DbConnection(dsn, replicaDsn)
+	db, err := openDbConnection(dsn, replicaDsn)
 	if err != nil {
 		return nil, err
 	}

@@ -10,15 +10,8 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
-var (
-	DB  *gorm.DB
-	err error
-)
-
-// DbConnection create database connection
-func DbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
-	var db = DB
-
+// openDbConnection create database connection
+func openDbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
 	logMode := viper.GetBool("DB_LOG_MODE")
 	debug := viper.GetBool("DEBUG")
 
@@ -27,14 +20,14 @@ func DbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
 		loglevel = logger.Info
 	}
 
-	db, err = gorm.Open(postgres.Open(masterDSN), &gorm.Config{
+	db, err := gorm.Open(postgres.Open(masterDSN), &gorm.Config{
 		Logger: logger.Default.LogMode(loglevel),
 	})
 	if !debug {
 		db.Use(dbresolver.Register(dbresolver.Config{
-			// Replicas: []gorm.Dialector{
-			// 	postgres.Open(replicaDSN),
-			// },
+			Replicas: []gorm.Dialector{
+				postgres.Open(replicaDSN),
+			},
 			Policy: dbresolver.RandomPolicy{},
 		}))
 	}
@@ -42,11 +35,5 @@ func DbConnection(masterDSN, replicaDSN string) (*gorm.DB, error) {
 		log.Fatalf("Db connection error")
 		return nil, err
 	}
-	DB = db
 	return db, err
-}
-
-// GetDB connection
-func GetDB() *gorm.DB {
-	return DB
 }
