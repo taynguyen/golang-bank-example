@@ -2,6 +2,8 @@ package accounts
 
 import (
 	"gin-boilerplate/internal/handlers"
+	"gin-boilerplate/internal/repository/transactions"
+	"gin-boilerplate/internal/utils"
 	"net/http"
 	"strconv"
 	"time"
@@ -10,12 +12,16 @@ import (
 )
 
 type Transaction struct {
-	UUID      string    `json:"uuid"`
-	AccountID uint      `json:"account_id"`
-	Amount    float32   `json:"amount"`
-	StatusID  uint      `json:"status_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	UUID      string     `json:"uuid"`
+	AccountID uint       `json:"account_id"`
+	Amount    float32    `json:"amount"`
+	StatusID  uint       `json:"status_id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+}
+
+type GetUserTransactionsQuery struct {
+	AccountID *uint `form:"account_id"`
 }
 
 type GetUserTransactionsResponse struct {
@@ -24,18 +30,37 @@ type GetUserTransactionsResponse struct {
 }
 
 func (h Handler) GetUserTransactions(c *gin.Context) {
-	// TODO: Get user ID from JWT token
+	// TODO: Get user ID from token
 
-	// Get user id from path parameter
+	// Path params
 	userIDStr := c.Param("id")
-	userID, err := strconv.ParseUint(userIDStr, 10, 32)
+	val, err := strconv.ParseUint(userIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": "INVALID_USER_ID", "message": "Invalid user ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_user_id", "message": "Invalid user ID"})
+		return
+	}
+	userID := uint(val)
+	filter := transactions.GetTransactionsFilter{
+		UserID: utils.Ptr(userID),
+	}
+
+	p := GetUserTransactionsQuery{}
+	if err := c.BindQuery(&p); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_query", "message": "Invalid query params"})
+		return
+	}
+	filter.AccountID = p.AccountID
+
+	// Pagination
+	defaultLimit := 10
+	filter.Pagination, err = handlers.GetPaginationFromQuery(c, defaultLimit)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_pagination", "message": err.Error()})
 		return
 	}
 
 	// Get transactions
-	transactions, pagination, err := h.accountCtrl.GetTransactions(c.Request.Context(), uint(userID))
+	transactions, pagination, err := h.accountCtrl.GetTransactions(c.Request.Context(), filter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": "INTERNAL_SERVER_ERROR", "message": "Internal server error"})
 		return

@@ -10,7 +10,8 @@ import (
 type GetTransactionsFilter struct {
 	models.Pagination
 
-	UserID *uint
+	UserID    *uint
+	AccountID *uint
 }
 
 func (i *impl) GetTransactions(ctx context.Context, filter GetTransactionsFilter) ([]models.Transaction, models.Pagination, error) {
@@ -18,6 +19,10 @@ func (i *impl) GetTransactions(ctx context.Context, filter GetTransactionsFilter
 
 	if filter.UserID != nil {
 		stmt = stmt.Where("accounts.user_id = ?", *filter.UserID)
+	}
+
+	if filter.AccountID != nil {
+		stmt = stmt.Where("transactions.account_id = ?", *filter.AccountID)
 	}
 
 	paging := filter.Pagination

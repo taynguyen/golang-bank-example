@@ -10,7 +10,7 @@ type Transaction struct {
 	StatusID  uint    `gorm:"not null"`
 
 	CreatedAt time.Time `gorm:"index:,sort:desc"`
-	UpdatedAt time.Time
+	UpdatedAt *time.Time
 
 	// Foreign keys
 	Type   *TransactionType
